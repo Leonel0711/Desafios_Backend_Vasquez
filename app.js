@@ -1,42 +1,68 @@
-//Class constructor to an user
-class Usuario {
-    constructor(name, lastName) {
-        this.nombre = name
-        this.apellido = lastName
-        this.libros = []
-        this.mascotas = []
+const fs = require('fs')
+class Contenedor {
+    constructor(nameArchivo) {
+        this.nameArc = nameArchivo
     }
-    //Return full name
-    getFullName() {
-        return (this.nombre + " " + this.apellido)
+
+    async save(object) {
+        let auxArray = []
+        try {
+            const data = await fs.promises.readFile(this.nameArc, "utf-8")
+            auxArray = JSON.parse(data)
+            let idArray = auxArray.map(obj => obj.id)
+            let highId = Math.max(...idArray)
+            object.id = highId + 1;
+            auxArray.push(object);
+            fs.writeFileSync(this.nameArc, JSON.stringify(auxArray))
+        }
+        catch {
+            object.id = 0;
+            auxArray.push(object);
+            fs.writeFileSync(this.nameArc, JSON.stringify(auxArray))
+        }
+        return object.id
     }
-    //Add a new pet to array
-    addMascota(namePet) {
-        this.mascotas.push(namePet);
+    async getById(number) {
+        try {
+            const data = await fs.promises.readFile(this.nameArc, "utf-8")
+            let auxArray = JSON.parse(data)
+            const object = auxArray.find(obj => obj.id === number)
+            return object
+        }
+        catch {
+            return null
+        }
     }
-    //Return number of pets
-    countMascotas() {
-        return this.mascotas.length
+    async getAll() {
+        try {
+            const data = await fs.promises.readFile(this.nameArc, "utf-8")
+            const auxArray = JSON.parse(data)
+            return auxArray
+        }
+        catch {
+            return null
+        }
     }
-    //Add data of a book to arrayBook
-    addBook(nameBook, author) {
-        const dataBook = { name: nameBook, author: author }
-        this.libros.push(dataBook)
+    async deleteById(number) {
+        try {
+            const data = await fs.promises.readFile(this.nameArc, "utf-8")
+            const auxArray = JSON.parse(data)
+            const newArray = auxArray.filter(obj => obj.id !== number)
+            fs.writeFileSync(this.nameArc, JSON.stringify(newArray))
+        }
+        catch {
+            return "No hay objetos en el archivo"
+        }
     }
-    //Return an array with name of books.
-    getBookNames() {
-        return this.libros.map(libro => libro.name)
+    deleteAll() {
+        fs.writeFileSync(this.nameArc, "")
     }
 }
-//Crete the user
-const usuario = new Usuario("Lucas", "Vasquez")
-//Get full name of the user
-console.log(usuario.getFullName())
-//Add some new pets to the user
-usuario.addMascota("Bola de Nieve")
-usuario.addMascota("Bola de Pelo")
-console.log(usuario.countMascotas())
-//Add some books to the user
-usuario.addBook("Las Crónicas de Narnia", "C. S. Lewis")
-usuario.addBook("Las Crónicas de Narnia 2", "C. S. Lewis")
-console.log(usuario.getBookNames())
+
+const newArchivo = new Contenedor("./archivo_prueba.txt");
+newArchivo.save({ title: "Grafica RTX 4070", price: 300040, thumbnail: "grafica.png" }).then(resolve => console.log(resolve));
+newArchivo.getById(1).then(resolve => console.log(resolve));
+newArchivo.getAll().then(resolve => console.log(resolve));
+newArchivo.deleteById(2);
+newArchivo.deleteAll();
+
