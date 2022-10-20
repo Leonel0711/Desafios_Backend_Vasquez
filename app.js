@@ -1,4 +1,6 @@
-const fs = require('fs')
+const fs = require('fs');
+const express = require('express');
+
 class Contenedor {
     constructor(nameArchivo) {
         this.nameArc = nameArchivo
@@ -59,10 +61,31 @@ class Contenedor {
     }
 }
 
-const newArchivo = new Contenedor("./archivo_prueba.txt");
-newArchivo.save({ title: "Grafica RTX 4070", price: 300040, thumbnail: "grafica.png" }).then(resolve => console.log(resolve));
-newArchivo.getById(1).then(resolve => console.log(resolve));
-newArchivo.getAll().then(resolve => console.log(resolve));
-newArchivo.deleteById(2);
-newArchivo.deleteAll();
+const newArchivo = new Contenedor("./productos.txt");
+const app = express();
+const PORT = 8080;
+const server = app.listen(PORT, () => {
+    console.log(`Servidor http escuchando en el puerto ${server.address().port}`)
+})
+
+server.on("error", error => console.log(`Error en servidor ${error}`))
+
+app.get('/', (req, res) => {
+    res.end("Welcome to GameStore")
+})
+app.get('/productos', (req, res) => {
+    newArchivo.getAll().then(resolve => {
+        res.end(`todo los productos: ${JSON.stringify(resolve)}`)
+    });
+
+})
+app.get('/productoRandom', (req, res) => {
+    let nRandom = parseInt((Math.random() * 4) + 1)
+    newArchivo.getById(nRandom).then(resolve => {
+        res.end(`producto random: ${JSON.stringify(resolve)}`)
+    });
+})
+
+
+
 
