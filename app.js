@@ -1,91 +1,64 @@
-const fs = require('fs');
 const express = require('express');
 
-class Contenedor {
-    constructor(nameArchivo) {
-        this.nameArc = nameArchivo
-    }
+const { Router } = express;
+const productosRouter = new Router();
 
-    async save(object) {
-        let auxArray = []
-        try {
-            const data = await fs.promises.readFile(this.nameArc, "utf-8")
-            auxArray = JSON.parse(data)
-            let idArray = auxArray.map(obj => obj.id)
-            let highId = Math.max(...idArray)
-            object.id = highId + 1;
-            auxArray.push(object);
-            fs.writeFileSync(this.nameArc, JSON.stringify(auxArray))
-        }
-        catch {
-            object.id = 0;
-            auxArray.push(object);
-            fs.writeFileSync(this.nameArc, JSON.stringify(auxArray))
-        }
-        return object.id
-    }
-    async getById(number) {
-        try {
-            const data = await fs.promises.readFile(this.nameArc, "utf-8")
-            let auxArray = JSON.parse(data)
-            const object = auxArray.find(obj => obj.id === number)
-            return object
-        }
-        catch {
-            return null
-        }
-    }
-    async getAll() {
-        try {
-            const data = await fs.promises.readFile(this.nameArc, "utf-8")
-            const auxArray = JSON.parse(data)
-            return auxArray
-        }
-        catch {
-            return null
-        }
-    }
-    async deleteById(number) {
-        try {
-            const data = await fs.promises.readFile(this.nameArc, "utf-8")
-            const auxArray = JSON.parse(data)
-            const newArray = auxArray.filter(obj => obj.id !== number)
-            fs.writeFileSync(this.nameArc, JSON.stringify(newArray))
-        }
-        catch {
-            return "No hay objetos en el archivo"
-        }
-    }
-    deleteAll() {
-        fs.writeFileSync(this.nameArc, "")
-    }
-}
-
-const newArchivo = new Contenedor("./productos.txt");
 const app = express();
-const PORT = 8080;
+
+app.use("/static", express.static(__dirname + "public"))
+const PORT = process.env.PORT || 8080;
 const server = app.listen(PORT, () => {
     console.log(`Servidor http escuchando en el puerto ${server.address().port}`)
 })
+productosRouter.use(express.json())
+productosRouter.use(express.urlencoded({ extended: true }))
 
 server.on("error", error => console.log(`Error en servidor ${error}`))
 
-app.get('/', (req, res) => {
-    res.end("Welcome to GameStore")
-})
-app.get('/productos', (req, res) => {
-    newArchivo.getAll().then(resolve => {
-        res.end(`todo los productos: ${JSON.stringify(resolve)}`)
-    });
+const productos = []
 
-})
-app.get('/productoRandom', (req, res) => {
-    let nRandom = parseInt((Math.random() * 4) + 1)
-    newArchivo.getById(nRandom).then(resolve => {
-        res.end(`producto random: ${JSON.stringify(resolve)}`)
-    });
+productosRouter.get("/", (req, res) => {
+    res.json(productos)
 })
 
+productosRouter.get("/:id", (req, res) => {
+    let id = parseInt(req.params.id);
+    let objeto = productos.find(item => item.id == id);
+    res.json(objeto ? objeto : { error: "producto no encontrado" });
+})
+productosRouter.post("/", (req, res) => {
+    let objeto = req.body;
+    if (productos.length != 0) {
+        let arrayId = productos.map(item => item.id);
+        let highId = Math.max(...arrayId);
+        objeto.id = highId + 1;
+    } else objeto.id = 1;
 
+    productos.push(objeto);
+    res.json(objeto);
+})
+productosRouter.put("/:id", (req, res) => {
+    let id = parseInt(req.params.id);
+    req.body.id = id;
+    let objeto = req.body;
+    const auxArray = productos.map(item => item.id == id ? objeto : item);
+    productos.splice(0);
+    productos.push(...auxArray);
+    res.json(objeto);
+})
 
-
+productosRouter.delete("/:id", (req, res) => {
+    let id = parseInt(req.params.id);
+    let auxArray = productos.filter(item => item.id != id);
+    productos.splice(0);
+    productos.push(...auxArray);
+    res.json(productos);
+})
+//create subroutes
+app.use("/api/productos", productosRouter);
+//show index.html
+app.use('/static', express.static('public'));
+//not found page
+app.use((req, res, next) => {
+    res.status(404).send("Pagina no encontrada");
+})
