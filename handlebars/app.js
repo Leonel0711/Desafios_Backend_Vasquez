@@ -1,7 +1,10 @@
 const express = require('express');
+const exphbs = require('express-handlebars');
 const app = express();
 
-app.set("view engine", "ejs");
+app.engine("handlebars",exphbs.engine());
+app.set("view engine", "handlebars");
+app.set("views", "./views")
 
 app.use("/static", express.static(__dirname + "public"))
 
@@ -25,10 +28,10 @@ const handleVerify=(atributo)=>{
 const productos = []
 
 productosRouter.get("/", (req, res) => {
-    res.render("pages/productos", {productos})
+    res.render("tabla", {productos,titlePage:"Productos"})
 })
 app.get("/", (req, res) => {
-    res.render("pages/formu",{titlePage:"Formulario"})
+    res.render("formu",{titlePage:"Formulario"})
 })
 productosRouter.post("/", (req, res) => {
     let objeto = req.body;
