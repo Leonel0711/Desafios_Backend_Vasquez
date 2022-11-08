@@ -1,4 +1,4 @@
-const express = require('express');
+/* const express = require('express');
 const app = express();
 
 app.set("view engine", "ejs");
@@ -13,10 +13,6 @@ const server = app.listen(PORT, () => {
 const { Router } = express;
 const productosRouter = new Router();
 
-productosRouter.use(express.json())
-productosRouter.use(express.urlencoded({ extended: true }))
-
-server.on("error", error => console.log(`Error en servidor ${error}`))
 
 const handleVerify=(atributo)=>{
     return (atributo!="") 
@@ -25,9 +21,6 @@ const handleVerify=(atributo)=>{
 const productos = []
 
 productosRouter.get("/", (req, res) => {
-    res.render("pages/productos", {productos})
-})
-app.get("/", (req, res) => {
     res.render("pages/formu",{titlePage:"Formulario"})
 })
 productosRouter.post("/", (req, res) => {
@@ -48,7 +41,12 @@ productosRouter.post("/", (req, res) => {
 app.use("/api/productos", productosRouter);
 //show index.html
 app.use('/static', express.static('public'));
-//not found page
-app.use((req, res, next) => {
-    res.status(404).send("Pagina no encontrada");
+
+ */
+
+const { servidor } = require('./servidor.js');
+
+const server = servidor.listen(8080, () => {
+    console.log(`conectado y escuchando en puerto ${server.address().port}`)
 })
+server.on("error", error => console.log(`Error en servidor ${error}`))
