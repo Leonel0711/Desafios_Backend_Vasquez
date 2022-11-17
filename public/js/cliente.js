@@ -69,7 +69,7 @@ const showTable = () => {
 }
 const upDateTable = (productos) => {
     const contenido = productos.map(product => {
-        return (`<tr><td>${product.title}</td><td>$${product.price}</td><td><img src="${product.thumbnail}" alt="${product.title}" width="50px" height="50px"></td></tr>`)
+        return (`<tr><td>${product.title}</td><td>$${new Intl.NumberFormat('es-MX').format(product.price)}</td><td><img src="${product.thumbnail}" alt="${product.title}" width="50px" height="50px"></td></tr>`)
     }).join('');
     document.getElementById('tablaProducts').innerHTML = contenido;
 }
