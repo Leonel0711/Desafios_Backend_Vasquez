@@ -27,6 +27,7 @@ socket.on('conexion', msg => {
 })
 
 socket.on('mensajes', mensajes => {
+    console.log(mensajes)
     document.getElementById("chatText").innerHTML = `<ul>
     ${mensajes.map(dataCliente => {
         return (`<li class="listaMsg">
