@@ -1,23 +1,21 @@
-const express = require('express');
-const http = require('http');
-const socketio = require('socket.io')
-
-const { router } = require('./router.js')
-const { confiSocket } = require("./confisock.js")
+import express from 'express'
+import http from 'http'
+import routerCarr from './router/routerCarr.js';
+import routerProd from './router/routerProd.js';
+import routerSesion from './router/routerSesion.js';
 
 const app = express();
-const httpServer = new http.Server(app)
-const io = new socketio.Server(httpServer)
+export const httpServer = new http.Server(app)
 
-app.set("view engine", "ejs");
-app.use(express.static('public'))
-
-app.use('/', router)
+app.use('/api/sesion/', routerSesion)
+app.use('/api/productos/', routerProd)
+app.use('/api/carrito/', routerCarr)
 
 //not found page
-app.use((req, res, next) => {
-    res.status(404).send("Pagina no encontrada");
+app.all('*', (req, res) => {
+    const text = `ruta ${req.originalUrl},metodo ${req.method} no implementada`
+    res.status(404).json({ error: -2, descripcion: text })
 })
-confiSocket(io);
-module.exports = { servidor: httpServer }
+
+
 

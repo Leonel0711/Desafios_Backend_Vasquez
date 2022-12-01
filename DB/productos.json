@@ -1,0 +1,26 @@
+[
+    {
+        "title": "Esto es prueba post",
+        "description": "lorem insup taka taka",
+        "stock": 100,
+        "price": 213,
+        "thumbnail": "https://http2.mlstatic.com/D_NQ_NP_2X_664830-MLA51740457531_092022-F.webp",
+        "id": 0
+    },
+    {
+        "title": "Esto es prueba post",
+        "description": "lorem insup taka taka",
+        "stock": 200,
+        "price": 213,
+        "thumbnail": "https://http2.mlstatic.com/D_NQ_NP_2X_664830-MLA51740457531_092022-F.webp",
+        "id": 1
+    },
+    {
+        "title": "Esto es prueba post",
+        "description": "lorem insup taka taka",
+        "stock": 100,
+        "price": 213,
+        "thumbnail": "https://http2.mlstatic.com/D_NQ_NP_2X_664830-MLA51740457531_092022-F.webp",
+        "id": 2
+    }
+]

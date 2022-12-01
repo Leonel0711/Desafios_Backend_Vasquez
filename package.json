@@ -1,11 +1,14 @@
 {
+  "type": "module",
   "dependencies": {
     "ejs": "^3.1.8",
     "express": "^4.18.2",
     "express-handlebars": "^6.0.6",
+    "firebase": "^9.14.0",
     "knex": "^2.3.0",
     "mariadb": "^3.0.2",
     "moment": "^2.29.4",
+    "mongodb": "^4.12.1",
     "mysql": "^2.18.1",
     "mysql2": "^2.3.3",
     "pug": "^3.0.2",
@@ -19,6 +22,7 @@
   "version": "1.0.0",
   "main": "app.js",
   "devDependencies": {
+    "dotenv": "^16.0.3",
     "nodemon": "^2.0.20"
   },
   "repository": {
