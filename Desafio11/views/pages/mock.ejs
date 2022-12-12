@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('../partials/head') %>
+        <title>Formulario</title>
+        <link rel="stylesheet" href="../../css/main.css">
+        <script src="/socket.io/socket.io.js"></script>
+</head>
+
+<body>
+    <div id="products">
+        <div class="d-flex align-items-center flex-column" id="tabla">
+            <table class="table table-dark">
+                <tr>
+                    <th>nombre</th>
+                    <th>precio</th>
+                    <th>img</th>
+                </tr>
+                <tbody id="tablaProducts">
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <%- include('../partials/scriptBS') %>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+        <script src="../../js/clienteMock.js"></script>
+</body>
+
+</html>
